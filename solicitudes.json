@@ -1,0 +1,12 @@
+[
+    {
+        "id_solicitud": 1,
+        "id_usuario": "02",
+        "nombre_usuario": "karina valentina",
+        "id_herramienta": "1",
+        "herramienta": "Juego De Destornilladores",
+        "cantidad_solicitada": 5,
+        "fecha_solicitud": "2026-02-14",
+        "estado": "Pendiente"
+    }
+]

@@ -1,0 +1,18 @@
+[
+    {
+        "id": "01",
+        "nombres": "jhoan sebastian",
+        "apellidos": "buitrago sandoval",
+        "telefono": "3232234442",
+        "direccion": "bucaramanga",
+        "tipo": "residente"
+    },
+    {
+        "id": "2",
+        "nombres": "Braynner Dayel",
+        "apellidos": "Jimenez Gaona",
+        "telefono": "3232443434",
+        "direccion": "concordia-cucuta",
+        "tipo": "residente"
+    }
+]

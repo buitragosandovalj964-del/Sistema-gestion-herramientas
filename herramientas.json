@@ -1,0 +1,42 @@
+[
+    {
+        "id": "1",
+        "nombre": "Juego De Destornilladores",
+        "categoria": "manual",
+        "cantidad": 10,
+        "estado": "activa",
+        "valor": 25000
+    },
+    {
+        "id": "2",
+        "nombre": "Martillo",
+        "categoria": "manual",
+        "cantidad": 14,
+        "estado": "activa",
+        "valor": 20000
+    },
+    {
+        "id": "3",
+        "nombre": "Pulidora",
+        "categoria": "electrica",
+        "cantidad": 7,
+        "estado": "activa",
+        "valor": 80000
+    },
+    {
+        "id": "4",
+        "nombre": "Hombre Solo",
+        "categoria": "manual",
+        "cantidad": 6,
+        "estado": "activa",
+        "valor": 35000
+    },
+    {
+        "id": "5",
+        "nombre": "Pistola De Calor",
+        "categoria": "electrica",
+        "cantidad": 8,
+        "estado": "fuera de servicio",
+        "valor": 85000
+    }
+]

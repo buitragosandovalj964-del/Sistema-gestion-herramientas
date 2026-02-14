@@ -1,0 +1,27 @@
+[2026-02-13 10:43:00] sistema iniciado
+[2026-02-13 11:07:00] sistema iniciado
+[2026-02-13 11:07:20] sistema iniciado
+[2026-02-13 11:07:49] sistema iniciado
+[2026-02-13 11:23:17] sistema iniciado
+[2026-02-13 11:25:51] sistema iniciado
+[2026-02-13 11:28:26] sistema iniciado
+[2026-02-13 11:36:33] sistema iniciado
+[2026-02-13 14:01:08] sistema iniciado
+[2026-02-13 14:38:14] sistema iniciado
+[2026-02-13 14:47:02] sistema iniciado
+[2026-02-13 15:04:42] sistema iniciado
+[2026-02-13 15:26:21] sistema iniciado
+[2026-02-13 15:39:26] sistema iniciado
+[2026-02-13 15:51:33] sistema iniciado
+[2026-02-13 16:00:40] sistema iniciado
+[2026-02-13 16:30:51] sistema iniciado
+[2026-02-13 16:32:19] sistema iniciado
+[2026-02-13 16:32:49] sistema iniciado
+[2026-02-14 17:25:47] [INFO] Sistema iniciado
+[2026-02-14 17:26:04] [INFO] Acceso de administrador exitoso
+[2026-02-14 17:26:19] [WARNING] Archivo solicitudes.json no encontrado, creando nuevo
+[2026-02-14 17:27:46] [INFO] Administrador cerró sesión
+[2026-02-14 17:28:37] [WARNING] Archivo solicitudes.json no encontrado, creando nuevo
+[2026-02-14 17:29:29] [INFO] Solicitud creada por usuario - Usuario: karina valentina, Herramienta: Juego De Destornilladores, Cantidad: 5
+[2026-02-14 17:30:01] [INFO] Usuario cerró sesión
+[2026-02-14 17:30:06] [INFO] Sistema cerrado
