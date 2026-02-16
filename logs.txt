@@ -25,3 +25,4 @@
 [2026-02-14 17:29:29] [INFO] Solicitud creada por usuario - Usuario: karina valentina, Herramienta: Juego De Destornilladores, Cantidad: 5
 [2026-02-14 17:30:01] [INFO] Usuario cerró sesión
 [2026-02-14 17:30:06] [INFO] Sistema cerrado
+[2026-02-16 09:34:27] [INFO] Sistema iniciado
