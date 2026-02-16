@@ -1,108 +1,154 @@
 # 🔧 Sistema de Gestión de Herramientas Comunitarias
 
-Proyecto desarrollado en Python para la administración eficiente de herramientas en un sistema comunitaria. Este sistema facilita el préstamo y control de herramientas entre vecinos, evitando pérdidas y desorganización.
+Sistema desarrollado en Python para gestionar herramientas compartidas entre vecinos.
 
----
+## 📋 Requisitos del Sistema
 
-## 📌 Planteamiento del Problema
+- Python 3.8 o superior
+- pip (gestor de paquetes de Python)
 
-En muchos barrios existe la costumbre de compartir herramientas entre vecinos para evitar que cada persona tenga que comprarlas todas. El problema es que, con el tiempo, se pierde el control: algunas herramientas no se devuelven a tiempo, otras se dañan y no se sabe quién las tiene, o simplemente no hay registro claro de cuántas hay disponibles.
+## 📦 Instalación
 
-La junta comunal de tu barrio ha decidido organizar este proceso mediante un programa de consola que registra las herramientas, los vecinos y los beneficios obtenidos. Con esta solución, esperan que cualquier integrante de la comunidad pueda consultar la información sin depender de cuadernos ni llamadas telefónicas.
+1. **Clonar el repositorio**
+```bash
+git clone https://github.com/buitragosandovalj964-del/Sistema-gestion-herramientas.git
+cd Sistema-gestion-herramientas/PROYECTO
+```
 
----
+2. **Instalar dependencias**
+```bash
+pip install colorama
+```
 
-## 🎯 Requisitos del Sistema
+## 🚀 Ejecución
+```bash
+python principal.py
+```
 
-### Gestión de Herramientas
-Cada herramienta debe registrar: ID, nombre, categoría (ej. construcción, jardinería), cantidad disponible, estado (activa, en reparación, fuera de servicio) y valor estimado.  
-El programa debe permitir: crear, listar, buscar, actualizar y eliminar o inactivar herramientas.
+## 👤 Credenciales de Prueba
 
-### Gestión de Usuarios
-Cada vecino debe registrar: ID, nombres, apellidos, teléfono, dirección y tipo de usuario (ej. residente, administrador).  
-Operaciones: crear, listar, buscar, actualizar y eliminar usuarios.
+**Administrador:**
+- Contraseña: `0611JB`
 
-### Gestión de Préstamos
-Al registrar un préstamo se debe guardar: ID del préstamo, usuario, herramienta, cantidad, fecha de inicio, fecha estimada de devolución, estado y observaciones.  
-El sistema debe verificar la disponibilidad de la herramienta y ajustar la cantidad en stock.  
-Cuando se devuelva la herramienta, se debe actualizar el estado del préstamo y restaurar la cantidad disponible.
+**Usuario:**
+- Sin contraseña (acceso libre)
 
-### Consultas e Informes
-- Herramientas con stock bajo (por ejemplo, menos de 3 unidades).
-- Préstamos activos y vencidos.
-- Historial de préstamos de un usuario.
-- Herramientas más solicitadas por la comunidad.
-- Usuarios que han solicitado más herramientas.
+## 📖 Uso del Sistema
 
-### Registro de Eventos (Logs)
-Todo error o evento relevante (ejemplo: intentar prestar más herramientas de las disponibles) debe quedar registrado en un archivo de texto para seguimiento de la administración.
+### Como Administrador
+1. Ejecutar el programa
+2. Seleccionar opción [1] Administrador
+3. Ingresar contraseña: `0611JB`
+4. Acceder a:
+   - Gestión de usuarios
+   - Gestión de herramientas
+   - Gestión de préstamos
+   - Aprobar solicitudes
+   - Consultas y reportes
 
-### Permisos a Manejar
-- **Administrador**: Se encargará de registrar a los usuarios y sus herramientas con el fin de evitar la suplantación de identidad.
-- **Usuario**: Puede consultar el estado de las herramientas, cuándo quedarán disponibles y quién la posee. Del mismo modo, puede crear una solicitud de herramienta que debe ser aprobada por el administrador.
-
----
-
-## 🚀 Funcionalidades
-
-- ✅ Registro y gestión completa de herramientas (CRUD: Crear, Leer, Actualizar, Eliminar).
-- ✅ Gestión de usuarios con roles diferenciados (residente, administrador).
-- ✅ Control de préstamos con validación de stock y fechas.
-- ✅ Generación de reportes y consultas avanzadas.
-- ✅ Registro automático de logs para auditoría y seguimiento.
-- ✅ Interfaz de consola intuitiva y fácil de usar.
-
----
-
-## 🛠 Tecnologías Utilizadas
-
-- **Python 3**: Lenguaje principal para el desarrollo del programa.
-- **Manejo de Archivos**: Almacenamiento de datos en archivos JSON para persistencia simple.
-- **JSON**: Formato de datos para bases de datos ligeras.
-- **Git y GitHub**: Control de versiones y colaboración.
-
----
+### Como Usuario
+1. Ejecutar el programa
+2. Seleccionar opción [2] Usuario
+3. Acceder a:
+   - Ver herramientas disponibles
+   - Ver préstamos activos
+   - Crear solicitud de herramienta
+   - Consultas y reportes
 
 ## 📂 Estructura del Proyecto
+```
+PROYECTO/
+├── principal.py              # Archivo principal
+├── agregar_herramienta.py    # Gestión de herramientas
+├── gestion_de_usuarios.py    # Gestión de usuarios
+├── gestion_de_prestamos.py   # Gestión de préstamos
+├── consultas_y_reportes.py   # Reportes
+├── registros.py              # Sistema de logs
+├── usuarios.json             # Datos de usuarios
+├── herramientas.json         # Datos de herramientas
+├── prestamos.json            # Datos de préstamos
+├── solicitudes.json          # Solicitudes pendientes
+└── logs.txt                  # Registro de eventos
+```
 
-sistema-herramientas/
-# Archivo principal del programa 
- ├── main.py 
-  # Módulo para gestión de herramientas
-   ├── herramientas.py
-   # Módulo para gestión de usuarios
-  ├── usuarios.py 
-   # Módulo para gestión de préstamos
-  ├── prestamos.py
-  # Módulo para consultas e informes 
-  ├── reportes.py 
-   # Módulo para registro de eventos
-   ├── logs.py 
-   # Archivo JSON para herramientas 
-    ├── herramientas.json 
-    # Archivo JSON para usuarios 
-     │ ├── usuarios.json  
-     # Archivo JSON para préstamos 
-      ├──prestamos.json
- # Archivo de texto para logs 
-  │└── logs.txt
+## 🎯 Funcionalidades
 
-  
----
+- ✅ Gestión completa de herramientas (CRUD)
+- ✅ Gestión de usuarios con roles (admin/residente)
+- ✅ Sistema de préstamos con validaciones
+- ✅ Sistema de solicitudes cuando no hay stock
+- ✅ Aprobación de solicitudes por administrador
+- ✅ Reportes y estadísticas de uso
+- ✅ Sistema de logs para auditoría
+- ✅ Validación de disponibilidad antes de prestar
+- ✅ Control de préstamos vencidos
 
-## 🖥 Instalación y Configuración
+## 📝 Ejemplos de Uso
 
-1. **Clona el repositorio**:
-   ```bash
-   git clone https://github.com/buitragosandovalj964-del/sistema-herramientas.git
-   cd sistema-herramientas
+### Ejemplo 1: Registrar una herramienta
+```
+1. Login como administrador
+2. Opción [2] Gestión de Herramientas
+3. Opción [1] Agregar herramienta
+4. Ingresar datos:
+   - ID: H001
+   - Nombre: Taladro
+   - Categoría: construcción
+   - Cantidad: 5
+   - Estado: activa
+   - Valor: 150000
+```
 
+### Ejemplo 2: Crear un préstamo
+```
+1. Login como administrador
+2. Opción [3] Gestión de Préstamos
+3. Opción [1] Registrar préstamo
+4. Ingresar ID de usuario y herramienta
+5. Sistema verifica disponibilidad
+6. Se crea el préstamo y reduce stock
+```
 
-   
----
+### Ejemplo 3: Solicitud cuando no hay stock
+```
+1. Acceso como usuario
+2. Opción [3] Crear solicitud
+3. Seleccionar herramienta deseada
+4. Sistema crea solicitud "Pendiente"
+5. Admin aprueba desde su menú
+```
+
+## 🐛 Solución de Problemas
+
+**Error: ModuleNotFoundError: No module named 'colorama'**
+```bash
+pip install colorama
+```
+
+**Error: Archivos JSON no encontrados**
+- Los archivos se crean automáticamente al ejecutar el programa
+
+**Caracteres raros en la consola**
+- Windows: `chcp 65001` en CMD antes de ejecutar
 
 ## 👨‍💻 Autor
 
-**Jhoan Sebastián Buitrago Sandoval**  
-camper de campusland 
-Proyecto python – 2026
+Proyecto académico - 2025
+
+## 📄 Licencia
+
+Proyecto educativo
+```
+
+---
+
+### **SOLUCIÓN 2: Crear Carpeta de Pruebas**
+
+Crea la siguiente estructura:
+```
+PROYECTO/
+└── pruebas/
+    ├── README_PRUEBAS.md
+    ├── caso_prueba_1.md
+    ├── caso_prueba_2.md
+    └── caso_prueba_3.md
