@@ -1,6 +1,6 @@
 # 🔧 Sistema de Gestión de Herramientas Comunitarias
 
-Proyecto desarrollado en Python para la administración eficiente de herramientas en un sistema comunitario o institucional. Este sistema facilita el préstamo y control de herramientas entre vecinos, evitando pérdidas y desorganización.
+Proyecto desarrollado en Python para la administración eficiente de herramientas en un sistema comunitaria. Este sistema facilita el préstamo y control de herramientas entre vecinos, evitando pérdidas y desorganización.
 
 ---
 
