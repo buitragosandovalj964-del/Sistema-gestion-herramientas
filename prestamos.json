@@ -70,5 +70,17 @@
         "fecha_estimada_devolucion": "2026-02-21",
         "estado": "Activo",
         "observaciones": "nada"
+    },
+    {
+        "id_prestamo": 7,
+        "id_usuario": "03",
+        "nombre_usuario": "pepito",
+        "id_herramienta": "1",
+        "herramienta": "Juego De Destornilladores",
+        "cantidad": 5,
+        "fecha_inicio": "2026-02-16",
+        "fecha_estimada_devolucion": "2026-02-23",
+        "estado": "Activo",
+        "observaciones": "Aprobado desde solicitud 2"
     }
 ]

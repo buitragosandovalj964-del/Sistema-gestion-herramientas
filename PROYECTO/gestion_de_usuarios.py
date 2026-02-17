@@ -15,11 +15,11 @@ TIPOS_VALIDOS = ["residente", "administrador"]
 # ==========================================
 
 def linea():
-    print(Fore.CYAN + "═" * 60)
+    print(Fore.CYAN + "=" * 60)
 
 def titulo(texto):
     linea()
-    print(Fore.YELLOW + Style.BRIGHT + f"   {texto}")
+    print(Fore.YELLOW + Style.BRIGHT + texto)
     linea()
 
 def pausa():
@@ -34,10 +34,10 @@ def cargar_usuarios():
         with open(ARCHIVO_USUARIOS, "r", encoding="utf-8") as archivo:
             return json.load(archivo)
     except FileNotFoundError:
-        registrar_log(f"Archivo {ARCHIVO_USUARIOS} no encontrado, creando nuevo", "WARNING")
+        registrar_log("Archivo usuarios.json no encontrado, creando nuevo", "WARNING")
         return []
     except json.JSONDecodeError as e:
-        registrar_log(f"Error al decodificar {ARCHIVO_USUARIOS}: {e}", "ERROR")
+        registrar_log("Error al leer usuarios.json: " + str(e), "ERROR")
         return []
 
 def guardar_usuarios(usuarios):
@@ -45,8 +45,8 @@ def guardar_usuarios(usuarios):
         with open(ARCHIVO_USUARIOS, "w", encoding="utf-8") as archivo:
             json.dump(usuarios, archivo, indent=4, ensure_ascii=False)
     except Exception as e:
-        registrar_log(f"Error al guardar usuarios: {e}", "ERROR")
-        print(Fore.RED + f"Error al guardar: {e}")
+        registrar_log("Error al guardar usuarios: " + str(e), "ERROR")
+        print(Fore.RED + "Error al guardar: " + str(e))
 
 def cargar_prestamos():
     try:
@@ -72,11 +72,13 @@ def agregar_usuario():
         pausa()
         return
 
-    if any(str(u["id"]) == id_u for u in usuarios):
-        print(Fore.RED + "Ya existe un usuario con ese ID.")
-        registrar_log(f"Intento de agregar usuario con ID duplicado: {id_u}", "WARNING")
-        pausa()
-        return
+    # Verificar si ya existe
+    for u in usuarios:
+        if str(u["id"]) == id_u:
+            print(Fore.RED + "Ya existe un usuario con ese ID.")
+            registrar_log("Intento de agregar usuario con ID duplicado: " + id_u, "WARNING")
+            pausa()
+            return
 
     nombres = input("Nombres: ").strip().title()
     apellidos = input("Apellidos: ").strip().title()
@@ -92,7 +94,7 @@ def agregar_usuario():
 
     if tipo not in TIPOS_VALIDOS:
         print(Fore.RED + "Tipo inválido.")
-        registrar_log(f"Tipo de usuario inválido: {tipo}", "WARNING")
+        registrar_log("Tipo de usuario inválido: " + tipo, "WARNING")
         pausa()
         return
 
@@ -109,7 +111,7 @@ def agregar_usuario():
     guardar_usuarios(usuarios)
 
     print(Fore.GREEN + "Usuario agregado correctamente.")
-    registrar_log(f"Usuario agregado: {nombres} {apellidos} (ID: {id_u}, Tipo: {tipo})", "INFO")
+    registrar_log("Usuario agregado: " + nombres + " " + apellidos + " (ID: " + id_u + ", Tipo: " + tipo + ")", "INFO")
     pausa()
 
 # ==========================================
@@ -133,14 +135,14 @@ def listar_usuarios():
         else:
             color_tipo = Fore.GREEN
 
-        print(Fore.WHITE + f"""
-ID        : {u['id']}
-Nombre    : {u['nombres']} {u['apellidos']}
-Teléfono  : {u['telefono']}
-Dirección : {u['direccion']}
-Tipo      : {color_tipo}{u['tipo']}{Fore.WHITE}
------------------------------------------
-""")
+        print(Fore.WHITE + "\n" + "-" * 50)
+        print("ID        : " + str(u['id']))
+        print("Nombre    : " + u['nombres'] + " " + u['apellidos'])
+        print("Teléfono  : " + u['telefono'])
+        print("Dirección : " + u['direccion'])
+        print("Tipo      : " + color_tipo + u['tipo'] + Fore.WHITE)
+    
+    print("-" * 50)
     pausa()
 
 # ==========================================
@@ -157,18 +159,18 @@ def buscar_usuario():
     for u in usuarios:
         if str(u["id"]) == id_buscar:
             print(Fore.GREEN + "\nUsuario encontrado:")
-            print(Fore.WHITE + f"""
-ID        : {u['id']}
-Nombre    : {u['nombres']} {u['apellidos']}
-Teléfono  : {u['telefono']}
-Dirección : {u['direccion']}
-Tipo      : {u['tipo']}
-""")
+            print(Fore.WHITE + "\n" + "-" * 50)
+            print("ID        : " + str(u['id']))
+            print("Nombre    : " + u['nombres'] + " " + u['apellidos'])
+            print("Teléfono  : " + u['telefono'])
+            print("Dirección : " + u['direccion'])
+            print("Tipo      : " + u['tipo'])
+            print("-" * 50)
             pausa()
             return
 
     print(Fore.RED + "Usuario no encontrado.")
-    registrar_log(f"Búsqueda de usuario sin resultados: {id_buscar}", "INFO")
+    registrar_log("Búsqueda de usuario sin resultados: " + id_buscar, "INFO")
     pausa()
 
 # ==========================================
@@ -187,30 +189,30 @@ def actualizar_usuario():
 
             print(Fore.LIGHTBLACK_EX + "Deje en blanco si no desea cambiar.")
 
-            nuevo_nombre = input(f"Nombres ({u['nombres']}): ").strip()
-            nuevo_apellido = input(f"Apellidos ({u['apellidos']}): ").strip()
-            nuevo_telefono = input(f"Teléfono ({u['telefono']}): ").strip()
-            nueva_direccion = input(f"Dirección ({u['direccion']}): ").strip()
-            nuevo_tipo = input(f"Tipo ({u['tipo']}): ").strip().lower()
+            nuevo_nombre = input("Nombres (" + u['nombres'] + "): ").strip()
+            nuevo_apellido = input("Apellidos (" + u['apellidos'] + "): ").strip()
+            nuevo_telefono = input("Teléfono (" + u['telefono'] + "): ").strip()
+            nueva_direccion = input("Dirección (" + u['direccion'] + "): ").strip()
+            nuevo_tipo = input("Tipo (" + u['tipo'] + "): ").strip().lower()
 
             cambios = []
 
             if nuevo_nombre:
                 u["nombres"] = nuevo_nombre.title()
-                cambios.append(f"nombres: {nuevo_nombre}")
+                cambios.append("nombres: " + nuevo_nombre)
             if nuevo_apellido:
                 u["apellidos"] = nuevo_apellido.title()
-                cambios.append(f"apellidos: {nuevo_apellido}")
+                cambios.append("apellidos: " + nuevo_apellido)
             if nuevo_telefono:
                 u["telefono"] = nuevo_telefono
-                cambios.append(f"teléfono: {nuevo_telefono}")
+                cambios.append("teléfono: " + nuevo_telefono)
             if nueva_direccion:
                 u["direccion"] = nueva_direccion
-                cambios.append(f"dirección: {nueva_direccion}")
+                cambios.append("dirección: " + nueva_direccion)
             if nuevo_tipo:
                 if nuevo_tipo in TIPOS_VALIDOS:
                     u["tipo"] = nuevo_tipo
-                    cambios.append(f"tipo: {nuevo_tipo}")
+                    cambios.append("tipo: " + nuevo_tipo)
                 else:
                     print(Fore.RED + "Tipo inválido.")
 
@@ -218,13 +220,13 @@ def actualizar_usuario():
             print(Fore.GREEN + "Usuario actualizado correctamente.")
             
             if cambios:
-                registrar_log(f"Usuario {id_buscar} actualizado: {', '.join(cambios)}", "INFO")
+                registrar_log("Usuario " + id_buscar + " actualizado: " + ", ".join(cambios), "INFO")
             
             pausa()
             return
 
     print(Fore.RED + "Usuario no encontrado.")
-    registrar_log(f"Intento de actualizar usuario inexistente: {id_buscar}", "WARNING")
+    registrar_log("Intento de actualizar usuario inexistente: " + id_buscar, "WARNING")
     pausa()
 
 # ==========================================
@@ -242,30 +244,27 @@ def eliminar_usuario():
     for u in usuarios:
         if str(u["id"]) == id_buscar:
 
-            # 🔒 BLOQUEAR SI TIENE PRÉSTAMOS ACTIVOS
-            tiene_prestamo = any(
-                str(p["id_usuario"]) == id_buscar and p["estado"] == "Activo"
-                for p in prestamos
-            )
+            # Bloquear si tiene préstamos activos
+            tiene_prestamo = False
+            for p in prestamos:
+                if str(p["id_usuario"]) == id_buscar and p["estado"] == "Activo":
+                    tiene_prestamo = True
+                    break
 
             if tiene_prestamo:
                 print(Fore.RED + "No se puede eliminar. Tiene préstamos activos.")
-                registrar_log(
-                    f"Intento de eliminar usuario con préstamos activos: "
-                    f"{u['nombres']} {u['apellidos']} (ID: {id_buscar})",
-                    "WARNING"
-                )
+                registrar_log("Intento de eliminar usuario con préstamos activos: " + u['nombres'] + " " + u['apellidos'] + " (ID: " + id_buscar + ")", "WARNING")
                 pausa()
                 return
 
             confirmacion = input(Fore.RED + "¿Está seguro? (s/n): ").lower()
 
             if confirmacion == "s":
-                nombre_eliminado = f"{u['nombres']} {u['apellidos']}"
+                nombre_eliminado = u['nombres'] + " " + u['apellidos']
                 usuarios.remove(u)
                 guardar_usuarios(usuarios)
                 print(Fore.GREEN + "Usuario eliminado correctamente.")
-                registrar_log(f"Usuario eliminado: {nombre_eliminado} (ID: {id_buscar})", "INFO")
+                registrar_log("Usuario eliminado: " + nombre_eliminado + " (ID: " + id_buscar + ")", "INFO")
             else:
                 print(Fore.YELLOW + "Operación cancelada.")
 
@@ -273,7 +272,7 @@ def eliminar_usuario():
             return
 
     print(Fore.RED + "Usuario no encontrado.")
-    registrar_log(f"Intento de eliminar usuario inexistente: {id_buscar}", "WARNING")
+    registrar_log("Intento de eliminar usuario inexistente: " + id_buscar, "WARNING")
     pausa()
 
 # ==========================================
@@ -282,14 +281,14 @@ def eliminar_usuario():
 
 def menu_usuarios():
     while True:
-        titulo("GESTIÓN DE USUARIOS")
+        titulo("GESTION DE USUARIOS")
 
-        print(Fore.WHITE + " 1 ➤ Agregar usuario")
-        print(Fore.WHITE + " 2 ➤ Listar usuarios")
-        print(Fore.WHITE + " 3 ➤ Buscar usuario")
-        print(Fore.WHITE + " 4 ➤ Actualizar usuario")
-        print(Fore.WHITE + " 5 ➤ Eliminar usuario")
-        print(Fore.RED   + " 6 ➤ Volver")
+        print(Fore.WHITE + "[1] Agregar usuario")
+        print(Fore.WHITE + "[2] Listar usuarios")
+        print(Fore.WHITE + "[3] Buscar usuario")
+        print(Fore.WHITE + "[4] Actualizar usuario")
+        print(Fore.WHITE + "[5] Eliminar usuario")
+        print(Fore.RED   + "[6] Volver")
 
         linea()
 

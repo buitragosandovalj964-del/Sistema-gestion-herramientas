@@ -26,3 +26,28 @@
 [2026-02-14 17:30:01] [INFO] Usuario cerró sesión
 [2026-02-14 17:30:06] [INFO] Sistema cerrado
 [2026-02-16 09:34:27] [INFO] Sistema iniciado
+[2026-02-16 09:38:47] [INFO] Sistema iniciado
+[2026-02-16 09:39:26] [INFO] Acceso de administrador exitoso
+[2026-02-16 09:41:37] [INFO] Sistema iniciado
+[2026-02-16 09:42:08] [INFO] Acceso de administrador exitoso
+[2026-02-16 09:43:26] [INFO] Usuario agregado: Pepito Andres Perez Rodriguez (ID: 03, Tipo: residente)
+[2026-02-16 09:43:56] [WARNING] Intento de actualizar usuario inexistente: 
+[2026-02-16 09:44:09] [INFO] Usuario eliminado: Pepito Andres Perez Rodriguez (ID: 03)
+[2026-02-16 09:45:04] [INFO] Sistema iniciado
+[2026-02-16 09:45:19] [INFO] Acceso de administrador exitoso
+[2026-02-16 09:46:56] [INFO] Administrador cerró sesión
+[2026-02-16 09:49:25] [INFO] Solicitud creada por usuario - Usuario: pepito, Herramienta: Juego De Destornilladores, Cantidad: 5
+[2026-02-16 09:49:35] [INFO] Usuario cerró sesión
+[2026-02-16 09:49:43] [INFO] Acceso de administrador exitoso
+[2026-02-16 09:50:23] [INFO] Solicitud aprobada - ID: 2, Usuario: pepito, Herramienta: Juego De Destornilladores, Cantidad: 5
+[Evento 1] [INFO] Sistema iniciado
+[Evento 2] [INFO] Acceso de administrador exitoso
+[Evento 3] [WARNING] Intento de agregar usuario con ID vacío
+[Evento 4] [INFO] Administrador cerró sesión
+[Evento 5] [INFO] Usuario cerró sesión
+[Evento 6] [INFO] Solicitud creada por usuario - Usuario: pepito, Herramienta: Hombre Solo, Cantidad: 8
+[Evento 7] [INFO] Usuario cerró sesión
+[Evento 8] [INFO] Acceso de administrador exitoso
+[Evento 9] [INFO] Solicitud rechazada por stock insuficiente - ID: 3
+[Evento 10] [INFO] Administrador cerró sesión
+[Evento 11] [INFO] Sistema cerrado

@@ -3,7 +3,7 @@
         "id": "1",
         "nombre": "Juego De Destornilladores",
         "categoria": "manual",
-        "cantidad": 10,
+        "cantidad": 5,
         "estado": "activa",
         "valor": 25000
     },

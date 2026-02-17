@@ -1,21 +1,30 @@
-from datetime import datetime
-import os
+# -*- coding: utf-8 -*-
 
 ARCHIVO_LOG = "logs.txt"
 
+# Contador simple para simular timestamp
+contador_logs = 0
+
 def registrar_log(mensaje, nivel="INFO"):
+    global contador_logs
     try:
-        # Crear archivo si no existe
-        if not os.path.exists(ARCHIVO_LOG):
-            with open(ARCHIVO_LOG, "w", encoding="utf-8") as f:
-                f.write("===== SISTEMA DE INVENTARIO - LOGS =====\n")
+        # Intentar leer el archivo para ver si existe
+        try:
+            archivo_existente = open(ARCHIVO_LOG, "r", encoding="utf-8")
+            archivo_existente.close()
+        except:
+            # Si no existe, crearlo
+            archivo_nuevo = open(ARCHIVO_LOG, "w", encoding="utf-8")
+            archivo_nuevo.write("===== SISTEMA DE INVENTARIO - LOGS =====\n")
+            archivo_nuevo.close()
 
-        fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        with open(ARCHIVO_LOG, "a", encoding="utf-8") as archivo:
-            archivo.write(f"[{fecha}] [{nivel}] {mensaje}\n")
+        contador_logs += 1
+        
+        # Agregar el nuevo log
+        archivo = open(ARCHIVO_LOG, "a", encoding="utf-8")
+        archivo.write("[Evento " + str(contador_logs) + "] [" + nivel + "] " + mensaje + "\n")
+        archivo.close()
 
     except Exception as e:
-        print(f"Error al escribir en el log: {e}")
-
+        print("Error al escribir en el log: " + str(e))
 

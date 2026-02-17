@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 from colorama import Fore, Style, init
 from gestion_de_usuarios import menu_usuarios
 from agregar_herramienta import menu_herramientas, listar_herramientas
@@ -10,7 +10,7 @@ import time
 
 init(autoreset=True)
 
-CLAVE_ADMIN = "0611JB"  
+CLAVE_ADMIN = "0611JB"
 
 # =========================================
 # DISEÑO VISUAL

@@ -8,5 +8,25 @@
         "cantidad_solicitada": 5,
         "fecha_solicitud": "2026-02-14",
         "estado": "Pendiente"
+    },
+    {
+        "id_solicitud": 2,
+        "id_usuario": "03",
+        "nombre_usuario": "pepito",
+        "id_herramienta": "1",
+        "herramienta": "Juego De Destornilladores",
+        "cantidad_solicitada": 5,
+        "fecha_solicitud": "2026-02-16",
+        "estado": "Aprobada"
+    },
+    {
+        "id_solicitud": 3,
+        "id_usuario": "03",
+        "nombre_usuario": "pepito",
+        "id_herramienta": "4",
+        "herramienta": "Hombre Solo",
+        "cantidad_solicitada": 8,
+        "fecha_solicitud": "2026-02-17",
+        "estado": "Rechazada - Stock insuficiente"
     }
 ]

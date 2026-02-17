@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-from datetime import datetime
 from colorama import Fore, Style, init
 from logs import registrar_log
 
@@ -15,11 +14,11 @@ ARCHIVO_SOLICITUDES = "solicitudes.json"
 # =====================================
 
 def linea():
-    print(Fore.CYAN + "═" * 60)
+    print(Fore.CYAN + "=" * 60)
 
 def titulo(texto):
     linea()
-    print(Fore.YELLOW + Style.BRIGHT + f"   {texto}")
+    print(Fore.YELLOW + Style.BRIGHT + texto)
     linea()
 
 def pausa():
@@ -41,8 +40,8 @@ def guardar_datos(archivo, datos):
         with open(archivo, "w", encoding="utf-8") as f:
             json.dump(datos, f, indent=4, ensure_ascii=False)
     except Exception as e:
-        registrar_log(f"Error al guardar {archivo}: {e}", "ERROR")
-        print(Fore.RED + f"Error al guardar: {e}")
+        registrar_log("Error al guardar " + archivo + ": " + str(e), "ERROR")
+        print(Fore.RED + "Error al guardar: " + str(e))
 
 # =====================================
 # 1. HERRAMIENTAS CON STOCK BAJO
@@ -53,7 +52,10 @@ def stock_bajo():
 
     titulo("HERRAMIENTAS CON STOCK BAJO (<3)")
 
-    bajas = [h for h in herramientas if h.get("cantidad", 0) < 3]
+    bajas = []
+    for h in herramientas:
+        if h.get("cantidad", 0) < 3:
+            bajas.append(h)
 
     if not bajas:
         print(Fore.GREEN + "No hay herramientas con stock bajo.")
@@ -61,14 +63,12 @@ def stock_bajo():
         return
 
     for h in bajas:
-        print(Fore.WHITE + f"""
-Nombre   : {h['nombre']}
-Cantidad : {h['cantidad']}
-Categoría: {h['categoria']}
------------------------------------------
-""")
+        print(Fore.WHITE + "\nNombre   : " + h['nombre'])
+        print("Cantidad : " + str(h['cantidad']))
+        print("Categoría: " + h['categoria'])
+        print("-" * 41)
     
-    registrar_log(f"Consulta de stock bajo - {len(bajas)} herramientas encontradas", "INFO")
+    registrar_log("Consulta de stock bajo - " + str(len(bajas)) + " herramientas encontradas", "INFO")
     pausa()
 
 # =====================================
@@ -78,9 +78,12 @@ Categoría: {h['categoria']}
 def prestamos_activos():
     prestamos = cargar_datos(ARCHIVO_PRESTAMOS)
 
-    titulo("PRÉSTAMOS ACTIVOS")
+    titulo("PRESTAMOS ACTIVOS")
 
-    activos = [p for p in prestamos if p.get("estado") == "Activo"]
+    activos = []
+    for p in prestamos:
+        if p.get("estado") == "Activo":
+            activos.append(p)
 
     if not activos:
         print(Fore.YELLOW + "No hay préstamos activos.")
@@ -88,14 +91,13 @@ def prestamos_activos():
         return
 
     for p in activos:
-        print(Fore.WHITE + f"""
-ID          : {p['id_prestamo']}
-Usuario     : {p['nombre_usuario']}
-Herramienta : {p['herramienta']}
-Cantidad    : {p['cantidad']}
-Devolución  : {p['fecha_estimada_devolucion']}
------------------------------------------
-""")
+        print(Fore.WHITE + "\nID          : " + str(p['id_prestamo']))
+        print("Usuario     : " + p['nombre_usuario'])
+        print("Herramienta : " + p['herramienta'])
+        print("Cantidad    : " + str(p['cantidad']))
+        print("Devolución  : " + p['fecha_estimada_devolucion'])
+        print("-" * 41)
+
     pausa()
 
 # =====================================
@@ -104,49 +106,29 @@ Devolución  : {p['fecha_estimada_devolucion']}
 
 def prestamos_vencidos():
     prestamos = cargar_datos(ARCHIVO_PRESTAMOS)
-    hoy = datetime.now().date()
-    hubo_cambios = False
 
-    titulo("PRÉSTAMOS VENCIDOS")
+    titulo("PRESTAMOS (Verificar vencidos manualmente)")
 
-    vencidos = []
+    print(Fore.YELLOW + "\nNOTA: Compare las fechas con la fecha actual")
+    print("para identificar cuáles están vencidos.\n")
 
+    activos = []
     for p in prestamos:
         if p.get("estado") == "Activo":
-            fecha_texto = p.get("fecha_estimada_devolucion")
+            activos.append(p)
 
-            if not fecha_texto:
-                continue
+    if not activos:
+        print(Fore.GREEN + "No hay préstamos activos.")
+        pausa()
+        return
 
-            try:
-                fecha_estimada = datetime.strptime(
-                    fecha_texto, "%Y-%m-%d"
-                ).date()
-            except ValueError:
-                continue
-
-            if fecha_estimada < hoy:
-                dias_vencido = (hoy - fecha_estimada).days
-                p["estado"] = "Vencido"
-                vencidos.append((p, dias_vencido))
-                hubo_cambios = True
-
-    if not vencidos:
-        print(Fore.GREEN + "No hay préstamos vencidos.")
-    else:
-        for p, dias in vencidos:
-            print(Fore.RED + f"""
-ID          : {p['id_prestamo']}
-Usuario     : {p['nombre_usuario']}
-Herramienta : {p['herramienta']}
-Vencido hace: {dias} día(s)
------------------------------------------
-""")
-        
-        registrar_log(f"Préstamos vencidos detectados: {len(vencidos)} préstamos actualizados a estado 'Vencido'", "WARNING")
-
-    if hubo_cambios:
-        guardar_datos(ARCHIVO_PRESTAMOS, prestamos)
+    for p in activos:
+        print(Fore.WHITE + "\nID          : " + str(p['id_prestamo']))
+        print("Usuario     : " + p['nombre_usuario'])
+        print("Herramienta : " + p['herramienta'])
+        print("Fecha devolución: " + p['fecha_estimada_devolucion'])
+        print("Estado      : " + p['estado'])
+        print("-" * 41)
 
     pausa()
 
@@ -161,28 +143,26 @@ def historial_usuario():
 
     nombre_usuario = input("Ingrese nombre del usuario: ").strip().lower()
 
-    encontrados = [
-        p for p in prestamos
-        if p.get("nombre_usuario", "").lower() == nombre_usuario
-    ]
+    encontrados = []
+    for p in prestamos:
+        if p.get("nombre_usuario", "").lower() == nombre_usuario:
+            encontrados.append(p)
 
     if not encontrados:
         print(Fore.YELLOW + "No tiene préstamos registrados.")
         pausa()
         return
 
-    print(Fore.GREEN + f"\nSe encontraron {len(encontrados)} préstamos:\n")
+    print(Fore.GREEN + "\nSe encontraron " + str(len(encontrados)) + " préstamos:\n")
 
     for p in encontrados:
-        print(Fore.WHITE + f"""
-ID          : {p['id_prestamo']}
-Herramienta : {p['herramienta']}
-Cantidad    : {p['cantidad']}
-Estado      : {p['estado']}
-Inicio      : {p['fecha_inicio']}
-Devolución  : {p['fecha_estimada_devolucion']}
------------------------------------------
-""")
+        print(Fore.WHITE + "\nID          : " + str(p['id_prestamo']))
+        print("Herramienta : " + p['herramienta'])
+        print("Cantidad    : " + str(p['cantidad']))
+        print("Estado      : " + p['estado'])
+        print("Inicio      : " + p['fecha_inicio'])
+        print("Devolución  : " + p['fecha_estimada_devolucion'])
+        print("-" * 41)
 
     pausa()
 
@@ -193,7 +173,7 @@ Devolución  : {p['fecha_estimada_devolucion']}
 def herramientas_mas_solicitadas():
     prestamos = cargar_datos(ARCHIVO_PRESTAMOS)
 
-    titulo("HERRAMIENTAS MÁS SOLICITADAS")
+    titulo("HERRAMIENTAS MAS SOLICITADAS")
 
     contador = {}
 
@@ -202,19 +182,34 @@ def herramientas_mas_solicitadas():
         cantidad = p.get("cantidad", 0)
 
         if nombre:
-            contador[nombre] = contador.get(nombre, 0) + cantidad
+            if nombre in contador:
+                contador[nombre] += cantidad
+            else:
+                contador[nombre] = cantidad
 
     if not contador:
         print(Fore.YELLOW + "No hay datos suficientes.")
         pausa()
         return
 
-    ordenadas = sorted(contador.items(), key=lambda x: x[1], reverse=True)
+    # Ordenar de mayor a menor
+    ordenadas = []
+    for nombre, total in contador.items():
+        ordenadas.append((nombre, total))
+    
+    # Ordenar manualmente (bubble sort simple)
+    for i in range(len(ordenadas)):
+        for j in range(i + 1, len(ordenadas)):
+            if ordenadas[j][1] > ordenadas[i][1]:
+                ordenadas[i], ordenadas[j] = ordenadas[j], ordenadas[i]
 
-    print(Fore.GREEN + f"\nTop {min(10, len(ordenadas))} herramientas más solicitadas:\n")
+    # Mostrar top 10
+    limite = min(10, len(ordenadas))
+    print(Fore.GREEN + "\nTop " + str(limite) + " herramientas más solicitadas:\n")
 
-    for i, (nombre, total) in enumerate(ordenadas[:10], 1):
-        print(Fore.WHITE + f"{i}. {nombre.title()}  ➤  Total solicitado: {total}")
+    for i in range(limite):
+        nombre, total = ordenadas[i]
+        print(Fore.WHITE + str(i + 1) + ". " + nombre.title() + " - Total solicitado: " + str(total))
 
     pausa()
 
@@ -225,7 +220,7 @@ def herramientas_mas_solicitadas():
 def usuarios_mas_activos():
     prestamos = cargar_datos(ARCHIVO_PRESTAMOS)
 
-    titulo("USUARIOS MÁS ACTIVOS")
+    titulo("USUARIOS MAS ACTIVOS")
 
     contador = {}
 
@@ -234,19 +229,34 @@ def usuarios_mas_activos():
         cantidad = p.get("cantidad", 0)
 
         if nombre:
-            contador[nombre] = contador.get(nombre, 0) + cantidad
+            if nombre in contador:
+                contador[nombre] += cantidad
+            else:
+                contador[nombre] = cantidad
 
     if not contador:
         print(Fore.YELLOW + "No hay datos suficientes.")
         pausa()
         return
 
-    ordenados = sorted(contador.items(), key=lambda x: x[1], reverse=True)
+    # Ordenar de mayor a menor
+    ordenados = []
+    for nombre, total in contador.items():
+        ordenados.append((nombre, total))
+    
+    # Ordenar manualmente
+    for i in range(len(ordenados)):
+        for j in range(i + 1, len(ordenados)):
+            if ordenados[j][1] > ordenados[i][1]:
+                ordenados[i], ordenados[j] = ordenados[j], ordenados[i]
 
-    print(Fore.GREEN + f"\nTop {min(10, len(ordenados))} usuarios más activos:\n")
+    # Mostrar top 10
+    limite = min(10, len(ordenados))
+    print(Fore.GREEN + "\nTop " + str(limite) + " usuarios más activos:\n")
 
-    for i, (nombre, total) in enumerate(ordenados[:10], 1):
-        print(Fore.WHITE + f"{i}. {nombre.title()}  ➤  Total solicitado: {total}")
+    for i in range(limite):
+        nombre, total = ordenados[i]
+        print(Fore.WHITE + str(i + 1) + ". " + nombre.title() + " - Total solicitado: " + str(total))
 
     pausa()
 
@@ -259,25 +269,26 @@ def solicitudes_pendientes():
 
     titulo("SOLICITUDES PENDIENTES")
 
-    pendientes = [s for s in solicitudes if s.get("estado") == "Pendiente"]
+    pendientes = []
+    for s in solicitudes:
+        if s.get("estado") == "Pendiente":
+            pendientes.append(s)
 
     if not pendientes:
         print(Fore.GREEN + "No hay solicitudes pendientes.")
         pausa()
         return
 
-    print(Fore.YELLOW + f"\nHay {len(pendientes)} solicitud(es) pendiente(s):\n")
+    print(Fore.YELLOW + "\nHay " + str(len(pendientes)) + " solicitud(es) pendiente(s):\n")
 
     for s in pendientes:
-        print(Fore.WHITE + f"""
-ID Solicitud : {s['id_solicitud']}
-Usuario      : {s['nombre_usuario']}
-Herramienta  : {s['herramienta']}
-Cantidad     : {s['cantidad_solicitada']}
-Fecha        : {s['fecha_solicitud']}
-Estado       : {s['estado']}
------------------------------------------
-""")
+        print(Fore.WHITE + "\nID Solicitud : " + str(s['id_solicitud']))
+        print("Usuario      : " + s['nombre_usuario'])
+        print("Herramienta  : " + s['herramienta'])
+        print("Cantidad     : " + str(s['cantidad_solicitada']))
+        print("Fecha        : " + s['fecha_solicitud'])
+        print("Estado       : " + s['estado'])
+        print("-" * 41)
 
     pausa()
 
@@ -289,14 +300,14 @@ def menu_consultas():
     while True:
         titulo("CONSULTAS Y REPORTES")
 
-        print(Fore.WHITE + " 1 ➤ Herramientas con stock bajo")
-        print(Fore.WHITE + " 2 ➤ Préstamos activos")
-        print(Fore.WHITE + " 3 ➤ Préstamos vencidos")
-        print(Fore.WHITE + " 4 ➤ Historial por usuario")
-        print(Fore.WHITE + " 5 ➤ Herramientas más solicitadas")
-        print(Fore.WHITE + " 6 ➤ Usuarios más activos")
-        print(Fore.WHITE + " 7 ➤ Solicitudes pendientes")
-        print(Fore.RED   + " 8 ➤ Volver")
+        print(Fore.WHITE + "[1] Herramientas con stock bajo")
+        print(Fore.WHITE + "[2] Préstamos activos")
+        print(Fore.WHITE + "[3] Préstamos vencidos")
+        print(Fore.WHITE + "[4] Historial por usuario")
+        print(Fore.WHITE + "[5] Herramientas más solicitadas")
+        print(Fore.WHITE + "[6] Usuarios más activos")
+        print(Fore.WHITE + "[7] Solicitudes pendientes")
+        print(Fore.RED   + "[8] Volver")
 
         linea()
 
@@ -321,4 +332,3 @@ def menu_consultas():
         else:
             print(Fore.RED + "Opción inválida.")
             pausa()
-

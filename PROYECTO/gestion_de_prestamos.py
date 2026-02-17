@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 from datetime import datetime, timedelta
 from gestion_de_usuarios import cargar_usuarios
@@ -15,7 +16,7 @@ ARCHIVO_SOLICITUDES = "solicitudes.json"
 # ==========================================
 
 def linea():
-    print(Fore.CYAN + "═" * 55)
+    print(Fore.CYAN + "=" * 55)
 
 def pausa():
     input(Fore.LIGHTBLACK_EX + "\nPresione ENTER para continuar...")
@@ -28,7 +29,7 @@ def cargar_datos(archivo):
         registrar_log(f"Archivo {archivo} no encontrado, creando nuevo", "WARNING")
         return []
     except json.JSONDecodeError as e:
-        registrar_log(f"Error al decodificar {archivo}: {e}", "ERROR")
+        registrar_log(f"Error al leer {archivo}: {e}", "ERROR")
         return []
 
 def guardar_datos(archivo, datos):
@@ -64,10 +65,11 @@ def registrar_prestamo():
     solicitudes = cargar_datos(ARCHIVO_SOLICITUDES)
 
     linea()
-    print(Fore.YELLOW + Style.BRIGHT + "        REGISTRAR PRÉSTAMO")
+    print(Fore.YELLOW + Style.BRIGHT + "        REGISTRAR PRESTAMO")
     linea()
 
     id_usuario = input("Ingrese ID del usuario: ").strip()
+    
     usuario = next((u for u in usuarios if str(u["id"]) == id_usuario), None)
 
     if not usuario:
@@ -77,6 +79,7 @@ def registrar_prestamo():
         return
 
     id_herramienta = input("Ingrese ID de herramienta: ").strip()
+    
     herramienta = next((h for h in herramientas if str(h["id"]) == id_herramienta), None)
 
     if not herramienta:
@@ -85,15 +88,11 @@ def registrar_prestamo():
         pausa()
         return
 
-    # ✅ VALIDAR ESTADO DE LA HERRAMIENTA
+    # Validar estado de la herramienta
     if herramienta["estado"] != "activa":
-        print(Fore.RED + f"\nLa herramienta no está disponible.")
+        print(Fore.RED + "\nLa herramienta no está disponible.")
         print(Fore.YELLOW + f"Estado actual: {herramienta['estado']}")
-        registrar_log(
-            f"Intento de préstamo de herramienta en estado '{herramienta['estado']}': "
-            f"{herramienta['nombre']} (ID: {id_herramienta})",
-            "WARNING"
-        )
+        registrar_log(f"Intento de préstamo de herramienta en estado '{herramienta['estado']}': {herramienta['nombre']} (ID: {id_herramienta})", "WARNING")
         pausa()
         return
 
@@ -107,8 +106,9 @@ def registrar_prestamo():
         pausa()
         return
 
-    # 🔴 SI NO HAY STOCK → CREAR SOLICITUD
+    # Si no hay stock, crear solicitud
     if herramienta["cantidad"] < cantidad:
+        fecha_solicitud = datetime.now().strftime("%Y-%m-%d")
 
         nueva_solicitud = {
             "id_solicitud": generar_id_solicitud(solicitudes),
@@ -117,7 +117,7 @@ def registrar_prestamo():
             "id_herramienta": id_herramienta,
             "herramienta": herramienta["nombre"],
             "cantidad_solicitada": cantidad,
-            "fecha_solicitud": datetime.now().strftime("%Y-%m-%d"),
+            "fecha_solicitud": fecha_solicitud,
             "estado": "Pendiente"
         }
 
@@ -128,12 +128,7 @@ def registrar_prestamo():
         print(Fore.YELLOW + f"Disponible: {herramienta['cantidad']}, Solicitado: {cantidad}")
         print(Fore.GREEN + "Se ha generado una solicitud pendiente.")
         
-        registrar_log(
-            f"Solicitud creada por falta de stock - Usuario: {usuario['nombres']}, "
-            f"Herramienta: {herramienta['nombre']}, Cantidad: {cantidad}, "
-            f"Disponible: {herramienta['cantidad']}",
-            "INFO"
-        )
+        registrar_log(f"Solicitud creada por falta de stock - Usuario: {usuario['nombres']}, Herramienta: {herramienta['nombre']}, Cantidad: {cantidad}, Disponible: {herramienta['cantidad']}", "INFO")
         
         pausa()
         return
@@ -163,11 +158,7 @@ def registrar_prestamo():
     guardar_datos(ARCHIVO_HERRAMIENTAS, herramientas)
 
     print(Fore.GREEN + "\nPréstamo registrado correctamente.")
-    registrar_log(
-        f"Préstamo registrado - Usuario: {usuario['nombres']}, "
-        f"Herramienta: {herramienta['nombre']}, Cantidad: {cantidad}",
-        "INFO"
-    )
+    registrar_log(f"Préstamo registrado - Usuario: {usuario['nombres']}, Herramienta: {herramienta['nombre']}, Cantidad: {cantidad}", "INFO")
     pausa()
 
 # ==========================================
@@ -184,11 +175,7 @@ def devolver_herramienta():
 
     id_prestamo = input("Ingrese ID del préstamo: ").strip()
 
-    prestamo = next(
-        (p for p in prestamos
-         if str(p["id_prestamo"]) == id_prestamo and p["estado"] == "Activo"),
-        None
-    )
+    prestamo = next((p for p in prestamos if str(p["id_prestamo"]) == id_prestamo and p["estado"] == "Activo"), None)
 
     if not prestamo:
         print(Fore.RED + "No existe préstamo activo con ese ID.")
@@ -196,11 +183,7 @@ def devolver_herramienta():
         pausa()
         return
 
-    herramienta = next(
-        (h for h in herramientas
-         if str(h["id"]) == str(prestamo["id_herramienta"])),
-        None
-    )
+    herramienta = next((h for h in herramientas if str(h["id"]) == str(prestamo["id_herramienta"])), None)
 
     if herramienta:
         herramienta["cantidad"] += prestamo["cantidad"]
@@ -212,11 +195,7 @@ def devolver_herramienta():
     guardar_datos(ARCHIVO_HERRAMIENTAS, herramientas)
 
     print(Fore.GREEN + "Préstamo finalizado correctamente.")
-    registrar_log(
-        f"Devolución registrada - Préstamo ID: {id_prestamo}, "
-        f"Herramienta: {prestamo['herramienta']}, Cantidad: {prestamo['cantidad']}",
-        "INFO"
-    )
+    registrar_log(f"Devolución registrada - Préstamo ID: {id_prestamo}, Herramienta: {prestamo['herramienta']}, Cantidad: {prestamo['cantidad']}", "INFO")
     pausa()
 
 # ==========================================
@@ -232,7 +211,7 @@ def aprobar_solicitud():
     print(Fore.YELLOW + Style.BRIGHT + "        APROBAR SOLICITUDES")
     linea()
 
-    pendientes = [s for s in solicitudes if s["estado"] == "Pendiente"]
+    pendientes = [s for s in solicitudes if s.get("estado") == "Pendiente"]
 
     if not pendientes:
         print(Fore.GREEN + "No hay solicitudes pendientes.")
@@ -242,14 +221,12 @@ def aprobar_solicitud():
     # Mostrar solicitudes pendientes
     print(Fore.WHITE + "\nSOLICITUDES PENDIENTES:\n")
     for s in pendientes:
-        print(f"""
-ID Solicitud : {s['id_solicitud']}
-Usuario      : {s['nombre_usuario']}
-Herramienta  : {s['herramienta']}
-Cantidad     : {s['cantidad_solicitada']}
-Fecha        : {s['fecha_solicitud']}
------------------------------------------------
-""")
+        print(f"\nID Solicitud : {s['id_solicitud']}")
+        print(f"Usuario      : {s['nombre_usuario']}")
+        print(f"Herramienta  : {s['herramienta']}")
+        print(f"Cantidad     : {s['cantidad_solicitada']}")
+        print(f"Fecha        : {s['fecha_solicitud']}")
+        print("-" * 47)
 
     # Seleccionar solicitud
     id_solicitud = input("\nIngrese ID de solicitud a revisar (0 para cancelar): ").strip()
@@ -257,10 +234,7 @@ Fecha        : {s['fecha_solicitud']}
     if id_solicitud == "0":
         return
 
-    solicitud = next(
-        (s for s in solicitudes if str(s["id_solicitud"]) == id_solicitud and s["estado"] == "Pendiente"),
-        None
-    )
+    solicitud = next((s for s in solicitudes if str(s["id_solicitud"]) == id_solicitud and s["estado"] == "Pendiente"), None)
 
     if not solicitud:
         print(Fore.RED + "Solicitud no encontrada o ya procesada.")
@@ -268,10 +242,7 @@ Fecha        : {s['fecha_solicitud']}
         return
 
     # Verificar disponibilidad actual
-    herramienta = next(
-        (h for h in herramientas if str(h["id"]) == str(solicitud["id_herramienta"])),
-        None
-    )
+    herramienta = next((h for h in herramientas if str(h["id"]) == str(solicitud["id_herramienta"])), None)
 
     if not herramienta:
         print(Fore.RED + "Herramienta no encontrada.")
@@ -293,10 +264,7 @@ Fecha        : {s['fecha_solicitud']}
             print(Fore.RED + f"\nNo se puede aprobar. La herramienta está '{herramienta['estado']}'")
             solicitud["estado"] = "Rechazada - Herramienta no disponible"
             guardar_datos(ARCHIVO_SOLICITUDES, solicitudes)
-            registrar_log(
-                f"Solicitud rechazada - herramienta en estado '{herramienta['estado']}': {solicitud['id_solicitud']}",
-                "INFO"
-            )
+            registrar_log(f"Solicitud rechazada - herramienta en estado '{herramienta['estado']}': {solicitud['id_solicitud']}", "INFO")
             pausa()
             return
 
@@ -326,23 +294,14 @@ Fecha        : {s['fecha_solicitud']}
             guardar_datos(ARCHIVO_HERRAMIENTAS, herramientas)
             guardar_datos(ARCHIVO_SOLICITUDES, solicitudes)
 
-            print(Fore.GREEN + "\n✔ Solicitud aprobada y préstamo creado.")
-            registrar_log(
-                f"Solicitud aprobada - ID: {solicitud['id_solicitud']}, "
-                f"Usuario: {solicitud['nombre_usuario']}, "
-                f"Herramienta: {solicitud['herramienta']}, "
-                f"Cantidad: {solicitud['cantidad_solicitada']}",
-                "INFO"
-            )
+            print(Fore.GREEN + "\nSolicitud aprobada y préstamo creado.")
+            registrar_log(f"Solicitud aprobada - ID: {solicitud['id_solicitud']}, Usuario: {solicitud['nombre_usuario']}, Herramienta: {solicitud['herramienta']}, Cantidad: {solicitud['cantidad_solicitada']}", "INFO")
 
         else:
             print(Fore.RED + "\nNo hay stock suficiente para aprobar.")
             solicitud["estado"] = "Rechazada - Stock insuficiente"
             guardar_datos(ARCHIVO_SOLICITUDES, solicitudes)
-            registrar_log(
-                f"Solicitud rechazada por stock insuficiente - ID: {solicitud['id_solicitud']}",
-                "INFO"
-            )
+            registrar_log(f"Solicitud rechazada por stock insuficiente - ID: {solicitud['id_solicitud']}", "INFO")
     else:
         solicitud["estado"] = "Rechazada - Por administrador"
         guardar_datos(ARCHIVO_SOLICITUDES, solicitudes)
@@ -356,9 +315,7 @@ Fecha        : {s['fecha_solicitud']}
 # ==========================================
 
 def crear_solicitud_usuario():
-    from agregar_herramienta import cargar_herramientas
-    
-    herramientas = cargar_herramientas()
+    herramientas = cargar_datos(ARCHIVO_HERRAMIENTAS)
     solicitudes = cargar_datos(ARCHIVO_SOLICITUDES)
 
     linea()
@@ -379,6 +336,7 @@ def crear_solicitud_usuario():
 
     print()
     id_herramienta = input("Ingrese ID de herramienta: ").strip()
+    
     herramienta = next((h for h in herramientas if str(h["id"]) == id_herramienta), None)
 
     if not herramienta:
@@ -403,6 +361,8 @@ def crear_solicitud_usuario():
         pausa()
         return
 
+    fecha_actual = datetime.now().strftime("%Y-%m-%d")
+
     nueva_solicitud = {
         "id_solicitud": generar_id_solicitud(solicitudes),
         "id_usuario": id_usuario,
@@ -410,21 +370,17 @@ def crear_solicitud_usuario():
         "id_herramienta": id_herramienta,
         "herramienta": herramienta["nombre"],
         "cantidad_solicitada": cantidad,
-        "fecha_solicitud": datetime.now().strftime("%Y-%m-%d"),
+        "fecha_solicitud": fecha_actual,
         "estado": "Pendiente"
     }
 
     solicitudes.append(nueva_solicitud)
     guardar_datos(ARCHIVO_SOLICITUDES, solicitudes)
 
-    print(Fore.GREEN + "\n✔ Solicitud creada correctamente.")
+    print(Fore.GREEN + "\nSolicitud creada correctamente.")
     print(Fore.YELLOW + "Espere la aprobación del administrador.")
     
-    registrar_log(
-        f"Solicitud creada por usuario - Usuario: {nombre_usuario}, "
-        f"Herramienta: {herramienta['nombre']}, Cantidad: {cantidad}",
-        "INFO"
-    )
+    registrar_log(f"Solicitud creada por usuario - Usuario: {nombre_usuario}, Herramienta: {herramienta['nombre']}, Cantidad: {cantidad}", "INFO")
     
     pausa()
 
@@ -434,10 +390,11 @@ def crear_solicitud_usuario():
 
 def reporte_prestamos_activos():
     prestamos = cargar_datos(ARCHIVO_PRESTAMOS)
+    
     activos = [p for p in prestamos if p["estado"] == "Activo"]
 
     linea()
-    print(Fore.YELLOW + Style.BRIGHT + "        PRÉSTAMOS ACTIVOS")
+    print(Fore.YELLOW + Style.BRIGHT + "        PRESTAMOS ACTIVOS")
     linea()
 
     if not activos:
@@ -445,31 +402,15 @@ def reporte_prestamos_activos():
         pausa()
         return
 
-    hoy = datetime.now().date()
-
     for p in activos:
-        try:
-            fecha_dev = datetime.strptime(
-                p["fecha_estimada_devolucion"], "%Y-%m-%d"
-            ).date()
-
-            if fecha_dev < hoy:
-                vencido = f"{Fore.RED}⚠ VENCIDO{Fore.WHITE}"
-            else:
-                vencido = f"{Fore.GREEN}✓ Al día{Fore.WHITE}"
-        except:
-            vencido = "?"
-
-        print(Fore.WHITE + f"""
-ID Préstamo : {p['id_prestamo']}
-Usuario     : {p['nombre_usuario']}
-Herramienta : {p['herramienta']}
-Cantidad    : {p['cantidad']}
-Inicio      : {p['fecha_inicio']}
-Devolución  : {p['fecha_estimada_devolucion']} {vencido}
-Estado      : {p['estado']}
------------------------------------------------
-""")
+        print(Fore.WHITE + f"\nID Préstamo : {p['id_prestamo']}")
+        print(f"Usuario     : {p['nombre_usuario']}")
+        print(f"Herramienta : {p['herramienta']}")
+        print(f"Cantidad    : {p['cantidad']}")
+        print(f"Inicio      : {p['fecha_inicio']}")
+        print(f"Devolución  : {p['fecha_estimada_devolucion']}")
+        print(f"Estado      : {p['estado']}")
+        print("-" * 47)
 
     pausa()
 
@@ -480,13 +421,13 @@ Estado      : {p['estado']}
 def menu_prestamos():
     while True:
         linea()
-        print(Fore.YELLOW + Style.BRIGHT + "     SISTEMA DE GESTIÓN DE PRÉSTAMOS")
+        print(Fore.YELLOW + Style.BRIGHT + "     SISTEMA DE GESTION DE PRESTAMOS")
         linea()
 
-        print(Fore.GREEN + " 1 ➤ Registrar préstamo")
-        print(Fore.BLUE + " 2 ➤ Devolver herramienta")
-        print(Fore.MAGENTA + " 3 ➤ Ver préstamos activos")
-        print(Fore.RED + " 4 ➤ Volver")
+        print(Fore.GREEN + "[1] Registrar préstamo")
+        print(Fore.BLUE + "[2] Devolver herramienta")
+        print(Fore.MAGENTA + "[3] Ver préstamos activos")
+        print(Fore.RED + "[4] Volver")
 
         linea()
 
@@ -503,6 +444,4 @@ def menu_prestamos():
         else:
             print(Fore.RED + "Opción inválida.")
             pausa()
-
-
 
